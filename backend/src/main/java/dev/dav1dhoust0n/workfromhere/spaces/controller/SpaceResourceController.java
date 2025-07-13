@@ -22,13 +22,13 @@ public class SpaceResourceController {
     }
 
     @GetMapping(value = SPACES_URI)
-    public List<SpaceResource> getAllSpaces() {
+    public ResponseEntity<List<SpaceResource>> getAllSpaces() {
         return ResponseEntity
                 .ok(spaceResourceService.getAllSpaces());
     }
 
     @GetMapping(value = SPACES_URI + "{id}")
-    public ResponseEntity<SpaceResource> getSpaceById(@RequestParam long id) {
+    public ResponseEntity<SpaceResource> getSpaceById(@PathVariable long id) {
         return ResponseEntity
                 .ok(spaceResourceService.getSpaceById(id));
     }
@@ -48,7 +48,7 @@ public class SpaceResourceController {
     }
 
     @DeleteMapping(value = SPACES_URI + "{id}")
-    public ResponseEntity<Void> deleteSpaceById(@RequestParam long id) {
+    public ResponseEntity<Void> deleteSpaceById(@PathVariable long id) {
         spaceResourceService.deleteSpace(id);
 
         return ResponseEntity.noContent().build();
