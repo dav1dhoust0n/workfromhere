@@ -1,5 +1,6 @@
 package dev.dav1dhoust0n.workfromhere.spaces.service;
 
+import dev.dav1dhoust0n.workfromhere.spaces.exception.SpaceResourceException;
 import dev.dav1dhoust0n.workfromhere.spaces.model.SpaceResource;
 import dev.dav1dhoust0n.workfromhere.spaces.repository.SpaceResourceRepository;
 import org.springframework.stereotype.Service;
@@ -19,16 +20,17 @@ public class SpaceResourceService {
     }
 
     public SpaceResource getSpaceById(long id) {
-        // NPE to be addressed
-        return spaceResourceRepository.findById(id).orElse(null);
+        return spaceResourceRepository
+                .findById(id)
+                .orElseThrow(() -> new SpaceResourceException("Space with id " + id + " not found"));
     }
 
 
     public SpaceResource createSpace(SpaceResource spaceResource) {
         // Check if space exists
-        if (spaceResourceRepository.findById(spaceResource.getId()).isEmpty()) {
-            // NPE to be addressed
-            throw new NullPointerException("Space with id " + spaceResource.getId() + " does not exist");
+        SpaceResource spaceExists = getSpaceById(spaceResource.getId());
+        if (spaceExists != null) {
+            throw new SpaceResourceException("Space with id " + spaceResource.getId() + " not found");
         }
 
         return spaceResourceRepository.save(spaceResource);
@@ -36,11 +38,10 @@ public class SpaceResourceService {
 
 
     public void updateSpace(SpaceResource updatedSpace, long id) {
-        SpaceResource originalSpace =  spaceResourceRepository.findById(id).orElse(null);
+        SpaceResource originalSpace =  getSpaceById(id);
 
         if  (originalSpace == null) {
-            // NPE to be addressed
-            throw new NullPointerException("Space with id " + id + " does not exist");
+            throw new SpaceResourceException("Space with id " + id + " not found");
         }
 
         updateSpaceResource(updatedSpace, originalSpace);
@@ -50,9 +51,8 @@ public class SpaceResourceService {
 
     public void deleteSpace(long id) {
         // Check if space exists
-        if (spaceResourceRepository.findById(id).isEmpty()) {
-            // NPE to be addressed
-            throw new NullPointerException("Space with id " + id + " does not exist");
+        if (getSpaceById(id) == null) {
+            throw new SpaceResourceException("Space with id " + id + " not found");
         }
 
         spaceResourceRepository.deleteById(id);
