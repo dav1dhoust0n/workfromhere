@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(SpaceResourceException.class)
-    public ResponseEntity<String> handleException(SpaceResourceException ex) {
+    public ResponseEntity<String> handleSpaceResourceException (SpaceResourceException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST );
     }
 }
